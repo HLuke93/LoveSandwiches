@@ -6,7 +6,7 @@ SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
-    ]
+]
 
 CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
@@ -65,6 +65,14 @@ def update_sales_worksheet(data):
     sales_worksheet.append_row(data)
     print("Sales worksheet updated successfully.\n")
 
+def update_surplus_worksheet(data):
+    
+    print("Updating surplus worksheet....")
+    surplus_worksheet = SHEET.worksheet("surplus")
+    surplus_worksheet.append_row(data)
+    print("Surplus worksheet updated successfully.\n")
+
+
 def calculate_surplus_data(sales_row):
     """
     compare sales with stock and calculate surplus for each item type
@@ -83,10 +91,9 @@ def calculate_surplus_data(sales_row):
     for stock, sales in zip(stock_row, sales_row):
         surplus = int(stock) - sales
         surplus_data.append(surplus)
-   
+
     return surplus_data
     
-
 
 
 def main():
@@ -94,15 +101,16 @@ def main():
     run all program functions
     """
     data = get_sales_data()
+    sales_data = [int(num) for num in data]
 
-    sales_data = [int(num) for num in data] 
-
-    update_sales_worksheet(data)
+    update_sales_worksheet(sales_data)
     new_surplus_data = calculate_surplus_data(sales_data)
-    print(new_surplus_data)
+    update_surplus_worksheet(new_surplus_data)
+    
+    
+    
 
-print("Welcome to love sandwiches Data Automation")   
+
+print("Welcome to love sandwiches Data Automation")
 
 main()
-
-
